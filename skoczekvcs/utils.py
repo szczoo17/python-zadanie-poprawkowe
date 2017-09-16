@@ -3,6 +3,7 @@ import os.path
 import shutil
 from difflib import Differ
 
+
 # copies srcDir to destDir recursively (replacing at destination)
 def copy(srcDir, destDir):
     if not os.path.exists(destDir):
@@ -12,7 +13,7 @@ def copy(srcDir, destDir):
         destFile = os.path.join(destDir, f)
         if os.path.isfile(srcFile):
             shutil.copyfile(srcFile, destFile)
-        elif f[0] != '.': # ignore special directories
+        elif f[0] != '.':  # ignore special directories
             copy(srcFile, destFile)
 
 

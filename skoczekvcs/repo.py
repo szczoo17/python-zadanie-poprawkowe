@@ -13,32 +13,28 @@ class Repository:
         self.changelogDir = os.path.join(self.destDir, ".changelog")
         self.deletedDir = os.path.join(self.destDir, ".deleted")
 
-
     # get latest revision number from a file
     def getRevision(self):
         with open(os.path.join(self.changelogDir, "rev.dat"), "rb") as file:
             revision = struct.unpack("<i", file.read())[0]
         return revision
 
-
     # update revision number
     def __setRevision(self, revision):
         with open(os.path.join(self.changelogDir, "rev.dat"), "wb") as file:
             file.write(struct.pack("<i", revision))
 
-
     # save first revision
     def __init(self):
         utils.copy(self.srcDir, self.destDir)
-        if not os.path.exists(self.changelogDir):      
+        if not os.path.exists(self.changelogDir):
             os.mkdir(self.changelogDir)
         with open(os.path.join(self.changelogDir, "rev.dat"), "wb") as file:
             file.write(struct.pack("<i", 1))
 
-
     # new revision
     def commit(self):
-        if not os.path.exists(self.changelogDir): 
+        if not os.path.exists(self.changelogDir):
             self.__init()
             return
         revision = self.getRevision()
@@ -56,8 +52,8 @@ class Repository:
                     file.write("fb {}\n".format(dirName))
                 else:
                     for f in fileList:
-                        f1 =  os.path.join(dirName, f)
-                        f2 =  os.path.join(dirName2, f)
+                        f1 = os.path.join(dirName, f)
+                        f2 = os.path.join(dirName2, f)
                         if not os.path.exists(f2):
                             # file added
                             file.write("fa {}\n".format(f1))
@@ -67,8 +63,8 @@ class Repository:
                                 file.write(line)
                     # find deleted files
                     for f in os.listdir(dirName2):
-                        f1 =  os.path.join(dirName, f)
-                        f2 =  os.path.join(dirName2, f)
+                        f1 = os.path.join(dirName, f)
+                        f2 = os.path.join(dirName2, f)
                         if not os.path.exists(f1) and f[0] != '.':
                             # file deleted - move it to .deleted
                             newPath = os.path.relpath(dirName2, self.destDir)
@@ -79,7 +75,6 @@ class Repository:
                             file.write("fd {}\n".format(f1))
 
         utils.copy(self.srcDir, self.destDir)
-
 
     # restore a previous revision with a given number
     def restore(self, revisionNumber):
